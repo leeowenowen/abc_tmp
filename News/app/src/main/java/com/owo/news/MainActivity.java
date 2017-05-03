@@ -1,8 +1,6 @@
 package com.owo.news;
 
 import android.content.Intent;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -18,7 +16,6 @@ import com.owo.news.core.webview.WebViewActivity;
 import com.owo.news.model.SourceConfig;
 import com.owo.news.model.provider.ArticleDefProvider;
 import com.owo.news.ui.ArticleAdapter;
-import com.owo.news.ui.ArticleItemView;
 
 public class MainActivity extends AppCompatActivity {
   //private MaterialViewPager mViewPager;
@@ -71,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         articleAdapter.setData(provider.getData());
         listView.setAdapter(articleAdapter);
         container.addView(listView);
+        listView.setDivider(null);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
           @Override
           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

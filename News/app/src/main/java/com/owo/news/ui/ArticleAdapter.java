@@ -1,5 +1,6 @@
 package com.owo.news.ui;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
@@ -10,9 +11,15 @@ import android.widget.BaseAdapter;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.NativeExpressAdView;
+import com.google.android.gms.ads.formats.NativeCustomTemplateAd;
 import com.owo.news.model.entity.Article;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * Created by wangli on 17-5-3.
@@ -61,7 +68,7 @@ public class ArticleAdapter extends BaseAdapter {
 
   @Override
   public int getCount() {
-    return mArticles == null ? 0 : mArticles.size();
+    return mArticles == null ? 0 : mArticles.size() + 1;
   }
 
   @Override
@@ -74,15 +81,57 @@ public class ArticleAdapter extends BaseAdapter {
     return 0;
   }
 
+  private Stack<ArticleItemView> mArticleItemViews = new Stack<>();
+  private Stack<NativeExpressAdView> mNativeViews = new Stack<>();
+
+  private View obtainView(Context context, int position) {
+    View v;
+    if (position == mArticles.size()) {
+      if (mNativeViews.size() > 0) {
+        v = mNativeViews.pop();
+      } else {
+        v = obtainNativeView(context);
+      }
+    } else {
+      if (mArticleItemViews.size() > 0) {
+        v = mArticleItemViews.pop();
+      } else {
+        v = obtainArticleImageView(context, position);
+      }
+    }
+    return v;
+  }
+
+  private ArticleItemView obtainArticleImageView(Context context, int position) {
+    ArticleItemView itemView = new ArticleItemView(context);
+    itemView.setData(mArticles.get(position), mImageLoader);
+    return itemView;
+  }
+
+  private NativeExpressAdView obtainNativeView(Context context) {
+    NativeExpressAdView adView = new NativeExpressAdView(context);
+    adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+    adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+    AdRequest request = new AdRequest.Builder().build();
+    adView.loadAd(request);
+    return adView;
+  }
+
+  private void putIntoCache(View v) {
+    if (v instanceof ArticleItemView && !mArticleItemViews.contains(v)) {
+      mArticleItemViews.add((ArticleItemView) v);
+      return;
+    }
+    if (v instanceof NativeExpressAdView && !mNativeViews.contains(v)) {
+      mNativeViews.add((NativeExpressAdView) v);
+    }
+  }
+
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    ArticleItemView view;
     if (convertView != null) {
-      view = (ArticleItemView) convertView;
-    } else {
-      view = new ArticleItemView(parent.getContext());
+      putIntoCache(convertView);
     }
-    view.setData(mArticles.get(position), mImageLoader);
-    return view;
+    return obtainView(parent.getContext(), position);
   }
 }
