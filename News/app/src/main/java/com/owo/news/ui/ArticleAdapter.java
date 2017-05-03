@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -66,9 +67,11 @@ public class ArticleAdapter extends BaseAdapter {
 
   }
 
+  private static final int N = 5;
+
   @Override
   public int getCount() {
-    return mArticles == null ? 0 : mArticles.size() + 1;
+    return mArticles == null ? 0 : mArticles.size() + mArticles.size() / (N - 1);
   }
 
   @Override
@@ -86,25 +89,28 @@ public class ArticleAdapter extends BaseAdapter {
 
   private View obtainView(Context context, int position) {
     View v;
-    if (position == mArticles.size()) {
+    if (position > 0 && ((position + 1) % N == 0)) {
       if (mNativeViews.size() > 0) {
         v = mNativeViews.pop();
       } else {
         v = obtainNativeView(context);
       }
     } else {
+      ArticleItemView articleItemView;
       if (mArticleItemViews.size() > 0) {
-        v = mArticleItemViews.pop();
+        articleItemView = mArticleItemViews.pop();
       } else {
-        v = obtainArticleImageView(context, position);
+        articleItemView = obtainArticleImageView(context);
       }
+      Log.d("xxx", "" + position + "->" + (position - (position + 1) / N));
+      articleItemView.setData(mArticles.get(position - (position + 1) / N), mImageLoader);
+      v = articleItemView;
     }
     return v;
   }
 
-  private ArticleItemView obtainArticleImageView(Context context, int position) {
+  private ArticleItemView obtainArticleImageView(Context context) {
     ArticleItemView itemView = new ArticleItemView(context);
-    itemView.setData(mArticles.get(position), mImageLoader);
     return itemView;
   }
 

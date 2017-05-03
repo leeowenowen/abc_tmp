@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
           @Override
           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String url = provider.getData().get(position).url();
+            String url = provider.getData().get(position - position / 5).url();
             Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
             intent.putExtra("url", url);
             MainActivity.this.startActivity(intent);
