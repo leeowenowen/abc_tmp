@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TableLayout;
 
 import com.owo.news.core.webview.WebViewActivity;
 import com.owo.news.model.SourceConfig;
@@ -20,6 +23,7 @@ import com.owo.news.ui.ArticleAdapter;
 public class MainActivity extends AppCompatActivity {
   //private MaterialViewPager mViewPager;
   private ViewPager mViewPager;
+  private TabLayout mTabLayout;
   private SourceConfig mSourceConfig;
 
   @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
@@ -47,7 +51,11 @@ public class MainActivity extends AppCompatActivity {
     //    });
     // mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
     mSourceConfig = new SourceConfig();
+    mTabLayout = new TabLayout(this);
     mViewPager = new ViewPager(this);
+    mTabLayout.setupWithViewPager(mViewPager);
+    mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+    mTabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
     mViewPager.setAdapter(new PagerAdapter() {
 
       @Override
@@ -78,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.startActivity(intent);
           }
         });
-
-
         return listView;
       }
 
@@ -87,7 +93,16 @@ public class MainActivity extends AppCompatActivity {
       public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
       }
+
+      @Override
+      public CharSequence getPageTitle(int position) {
+        return mSourceConfig.categories().get(position);
+      }
     });
-    setContentView(mViewPager);
+    LinearLayout main = new LinearLayout(this);
+    main.setOrientation(LinearLayout.VERTICAL);
+    main.addView(mTabLayout);
+    main.addView(mViewPager);
+    setContentView(main);
   }
 }
