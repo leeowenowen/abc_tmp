@@ -1,4 +1,4 @@
-package com.owo.news.core.common;
+package com.owo;
 
 /**
  * Created by wangli on 17-5-3.

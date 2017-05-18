@@ -8,7 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.owo.news.core.common.Action;
+import com.owo.Action;
 import com.owo.news.core.utils.JsonUtils;
 import com.owo.news.model.Constants;
 import com.owo.news.model.entity.SourceResponse;
