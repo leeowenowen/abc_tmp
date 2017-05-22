@@ -13,18 +13,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TableLayout;
 
 import com.owo.news.core.webview.WebViewActivity;
 import com.owo.news.model.SourceConfig;
 import com.owo.news.model.provider.ArticleDefProvider;
 import com.owo.news.ui.ArticleAdapter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class MainActivity extends AppCompatActivity {
   //private MaterialViewPager mViewPager;
   private ViewPager mViewPager;
   private TabLayout mTabLayout;
   private SourceConfig mSourceConfig;
+  private List<ListView> mListViews = new ArrayList<>();
 
   @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
   @Override
@@ -70,22 +75,26 @@ public class MainActivity extends AppCompatActivity {
 
       @Override
       public Object instantiateItem(ViewGroup container, int position) {
-        ListView listView = new ListView(MainActivity.this);
-        ArticleAdapter articleAdapter = new ArticleAdapter(MainActivity.this);
-        final ArticleDefProvider provider = new ArticleDefProvider();
-        articleAdapter.setData(provider.getData());
-        listView.setAdapter(articleAdapter);
-        container.addView(listView);
-        listView.setDivider(null);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-          @Override
-          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String url = provider.getData().get(position - position / 5).url();
-            Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
-            intent.putExtra("url", url);
-            MainActivity.this.startActivity(intent);
-          }
-        });
+        ListView listView = mListViews.get(position);
+        if (listView == null) {
+          listView = new ListView(MainActivity.this);
+          mListViews.add(position,listView);
+          ArticleAdapter articleAdapter = new ArticleAdapter(MainActivity.this);
+          final ArticleDefProvider provider = new ArticleDefProvider();
+          articleAdapter.setData(provider.getData());
+          listView.setAdapter(articleAdapter);
+          container.addView(listView);
+          listView.setDivider(null);
+          listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+              String url = provider.getData().get(position - position / 5).url();
+              Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
+              intent.putExtra("url", url);
+              MainActivity.this.startActivity(intent);
+            }
+          });
+        }
         return listView;
       }
 
