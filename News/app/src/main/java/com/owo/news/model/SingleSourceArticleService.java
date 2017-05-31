@@ -7,6 +7,7 @@ import com.owo.common.model.DataCallback;
 import com.owo.common.model.DataProvider;
 import com.owo.common.model.Result;
 import com.owo.common.model.ResultCode;
+import com.owo.common.model.RunningProvder;
 import com.owo.news.model.entity.Article;
 import com.owo.news.model.entity.ArticleResponse;
 import com.owo.news.model.entity.Source;
@@ -39,11 +40,10 @@ public class SingleSourceArticleService extends DataService<List<Article>> {
         mArticleFetcher.start(mSource, mOrderBy, new Action<ArticleResponse>() {
           @Override
           public void run(ArticleResponse articleResponse) {
+            mIsRunning = false;
             if ("ok".equals(articleResponse.status())) {
-              mIsRunning = false;
               callback.onResult(Result.make(ResultCode.SUCCESS, "", articleResponse.articles()));
             } else {
-              mIsRunning = false;
               callback.onResult(Result.make(ResultCode.ERROR_NO_DATA,
                                             "",
                                             articleResponse.articles()));

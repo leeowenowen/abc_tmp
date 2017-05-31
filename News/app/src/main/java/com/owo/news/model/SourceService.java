@@ -24,11 +24,14 @@ public class SourceService extends DataService<List<Source>> {
   @Override
   public DataProvider<List<Source>> networkProvider() {
     return new DataProvider<List<Source>>() {
+      private boolean mIsRunning;
       @Override
       public void request(final DataCallback<List<Source>> callback) {
+        mIsRunning = true;
         mSourceFetcher.start("", "", "", new Action<SourceResponse>() {
           @Override
           public void run(SourceResponse sourceResponse) {
+            mIsRunning = false;
             if ("ok".equals(sourceResponse.status())) {
               callback.onResult(Result.make(ResultCode.SUCCESS, "", sourceResponse.sources()));
             } else {
@@ -42,7 +45,7 @@ public class SourceService extends DataService<List<Source>> {
 
       @Override
       public boolean hasMore() {
-        return false;
+        return mIsRunning;
       }
     };
   }

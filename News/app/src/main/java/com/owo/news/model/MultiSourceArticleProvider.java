@@ -8,7 +8,6 @@ import com.owo.news.model.entity.Article;
 import com.owo.news.model.entity.Source;
 import com.owo.news.model.fetcher.ArticleFetcher;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

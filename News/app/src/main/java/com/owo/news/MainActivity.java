@@ -14,8 +14,14 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.owo.common.model.DataCallback;
+import com.owo.common.model.Result;
 import com.owo.news.core.webview.WebViewActivity;
+import com.owo.news.model.ArticleService;
 import com.owo.news.model.SourceConfig;
+import com.owo.news.model.SourceService;
+import com.owo.news.model.entity.Article;
+import com.owo.news.model.entity.Source;
 import com.owo.news.model.provider.ArticleDefProvider;
 import com.owo.news.ui.ArticleAdapter;
 
@@ -31,38 +37,54 @@ public class MainActivity extends AppCompatActivity {
   private SourceConfig mSourceConfig;
   private List<ListView> mListViews = new ArrayList<>();
 
+  //Model
+  SourceService mSourceService;
+  ArticleService mArticleService;
+
   @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    //    ListView listView = new ListView(this);
-    //    ArticleAdapter adapter = new ArticleAdapter(this);
-    //    ArticleProvider articleProvider = new ArticleDefProvider();
-    //    adapter.setData(articleProvider.getData());
-    //    listView.setAdapter(adapter);
-    //    setContentView(listView);
-    //  setContentView(R.layout.activity_main);
-    //    new SourceFetcher(this).start("", "", "", new Action<SourceResponse>() {
-    //      @Override
-    //      public void run(SourceResponse sourceResponse) {
-    //
-    //      }
-    //    });
-    //    new ArticleFetcher(this).start("the-next-web", "latest",new Action<ArticleResponse>() {
-    //      @Override
-    //      public void run(ArticleResponse sourceResponse) {
-    //
-    //      }
-    //    });
-    // mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
     mSourceConfig = new SourceConfig();
     mTabLayout = new TabLayout(this);
     mViewPager = new ViewPager(this);
     mTabLayout.setupWithViewPager(mViewPager);
     mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     mTabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
-    mViewPager.setAdapter(new PagerAdapter() {
+    LinearLayout main = new LinearLayout(this);
+    main.setOrientation(LinearLayout.VERTICAL);
+    main.addView(mTabLayout);
+    main.addView(mViewPager);
+    setContentView(main);
 
+    setupModel();
+    startLoadingData();
+  }
+
+  private void setupModel() {
+    mSourceService = new SourceService(this);
+    mArticleService = new ArticleService(this);
+  }
+
+  private void startLoadingData() {
+    mSourceService.request(new DataCallback<List<Source>>() {
+      @Override
+      public void onResult(Result<List<Source>> result) {
+        if (result.success()) {
+          List<Source> sources = result.data();
+          runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+              setupViewPager();
+            }
+          });
+        }
+      }
+    });
+  }
+
+  private void setupViewPager() {
+    mViewPager.setAdapter(new PagerAdapter() {
       @Override
       public int getCount() {
         return mSourceConfig.categories() == null ? 0 : mSourceConfig.categories().size();
@@ -78,17 +100,31 @@ public class MainActivity extends AppCompatActivity {
         ListView listView = mListViews.get(position);
         if (listView == null) {
           listView = new ListView(MainActivity.this);
-          mListViews.add(position,listView);
-          ArticleAdapter articleAdapter = new ArticleAdapter(MainActivity.this);
-          final ArticleDefProvider provider = new ArticleDefProvider();
-          articleAdapter.setData(provider.getData());
+          mListViews.add(position, listView);
+          final ArticleAdapter articleAdapter = new ArticleAdapter(MainActivity.this);
+          ArticleService articleService = new ArticleService(MainActivity.this);
+          articleService.requestMore(new DataCallback<List<Article>>() {
+            @Override
+            public void onResult(final Result<List<Article>> result) {
+              runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                  if (result.success()) {
+                    articleAdapter.setData(result.data());
+                  } else {
+
+                  }
+                }
+              });
+            }
+          });
           listView.setAdapter(articleAdapter);
           container.addView(listView);
           listView.setDivider(null);
           listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-              String url = provider.getData().get(position - position / 5).url();
+              String url = articleAdapter.getData().get(position - position / 5).url();
               Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
               intent.putExtra("url", url);
               MainActivity.this.startActivity(intent);
@@ -108,10 +144,5 @@ public class MainActivity extends AppCompatActivity {
         return mSourceConfig.categories().get(position);
       }
     });
-    LinearLayout main = new LinearLayout(this);
-    main.setOrientation(LinearLayout.VERTICAL);
-    main.addView(mTabLayout);
-    main.addView(mViewPager);
-    setContentView(main);
   }
 }

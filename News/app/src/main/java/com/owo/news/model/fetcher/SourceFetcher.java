@@ -13,20 +13,36 @@ import com.owo.news.core.utils.JsonUtils;
 import com.owo.news.model.Constants;
 import com.owo.news.model.entity.SourceResponse;
 
-public class SourceFetcher {
+public class SourceFetcher implements NetworkFetcher<SourceResponse> {
   private RequestQueue mRequestQueue;
+  private String mCategory;
+  private String mLanguage;
+  private String mCountry;
 
   public SourceFetcher(Context context) {
     mRequestQueue = Volley.newRequestQueue(context);
   }
 
-  public void start(String category,
-                    String language,
-                    String country,
-                    final Action<SourceResponse> callback) {
+  public SourceFetcher category(String category) {
+    mCategory = category;
+    return this;
+  }
+
+  public SourceFetcher language(String language) {
+    mLanguage = language;
+    return this;
+  }
+
+  public SourceFetcher country(String country) {
+    mCountry = country;
+    return this;
+  }
+
+  @Override
+  public void fetch(final Action<SourceResponse> callback) {
     String url =
-        Constants.URL_SOURCE + "?category=" + category + "&language=" + language + "&country=" +
-        country  + "&apiKey=" + Constants.API_KEY;
+        Constants.URL_SOURCE + "?category=" + mCategory + "&language=" + mLanguage + "&country=" +
+        mCountry + "&apiKey=" + Constants.API_KEY;
 
     StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {
       @Override

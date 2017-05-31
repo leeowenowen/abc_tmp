@@ -13,16 +13,29 @@ import com.owo.news.core.utils.JsonUtils;
 import com.owo.news.model.Constants;
 import com.owo.news.model.entity.ArticleResponse;
 
-public class ArticleFetcher {
+public class ArticleFetcher implements NetworkFetcher<ArticleResponse> {
   private RequestQueue mRequestQueue;
+  private String mSource;
+  private String mSortBy;
 
 
   public ArticleFetcher(Context context) {
     mRequestQueue = Volley.newRequestQueue(context);
   }
 
-  public void start(String source, String sortBy, final Action<ArticleResponse> callback) {
-    String url = Constants.URL_ARTICLES + "?source=" + source + "&sortBy=" + sortBy + "&apiKey=" +
+  public ArticleFetcher source(String source) {
+    mSource = source;
+    return this;
+  }
+
+  public ArticleFetcher sortBy(String sortBy) {
+    mSortBy = sortBy;
+    return this;
+  }
+
+  @Override
+  public void fetch(final Action<ArticleResponse> callback) {
+    String url = Constants.URL_ARTICLES + "?source=" + mSource + "&sortBy=" + mSortBy + "&apiKey=" +
                  Constants.API_KEY;
 
     StringRequest stringRequest = new StringRequest(url, new Response.Listener<String>() {

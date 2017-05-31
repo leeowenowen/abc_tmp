@@ -64,7 +64,10 @@ public class ArticleAdapter extends BaseAdapter {
   public void setData(List<Article> articles) {
     mArticles = articles;
     notifyDataSetChanged();
+  }
 
+  public List<Article> getData() {
+    return mArticles;
   }
 
   private static final int N = 5;
