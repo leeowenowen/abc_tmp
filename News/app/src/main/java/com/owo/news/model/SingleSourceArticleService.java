@@ -31,20 +31,30 @@ public class SingleSourceArticleService extends DataService<List<Article>> {
   @Override
   public DataProvider<List<Article>> networkProvider() {
     return new DataProvider<List<Article>>() {
+      private boolean mIsRunning;
+
       @Override
       public void request(final DataCallback<List<Article>> callback) {
+        mIsRunning = true;
         mArticleFetcher.start(mSource, mOrderBy, new Action<ArticleResponse>() {
           @Override
           public void run(ArticleResponse articleResponse) {
             if ("ok".equals(articleResponse.status())) {
+              mIsRunning = false;
               callback.onResult(Result.make(ResultCode.SUCCESS, "", articleResponse.articles()));
             } else {
+              mIsRunning = false;
               callback.onResult(Result.make(ResultCode.ERROR_NO_DATA,
                                             "",
                                             articleResponse.articles()));
             }
           }
         });
+      }
+
+      @Override
+      public boolean hasMore() {
+        return mIsRunning;
       }
     };
   }

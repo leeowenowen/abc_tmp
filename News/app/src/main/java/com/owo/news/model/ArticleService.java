@@ -1,36 +1,45 @@
 package com.owo.news.model;
 
-import android.content.Context;
-
-import com.owo.common.model.DataCallback;
-import com.owo.common.model.DataProvider;
+import com.owo.Action;
 import com.owo.news.model.entity.Article;
-import com.owo.news.model.entity.Source;
-import com.owo.news.model.fetcher.ArticleFetcher;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Observable;
 
-public class ArticleService implements DataProvider<List<Article>> {
-  private Map<String, SingleSourceArticleService> mChildren = new HashMap<>();
-  private ArticleFetcher mArticleFetcher;
+public class ArticleService extends Observable{
+  private List<Article> mArticles = new ArrayList<>();
 
-  public ArticleService(Context context) {
-    mArticleFetcher = new ArticleFetcher(context);
+  public interface Filter {
+    boolean match(Article article);
   }
 
-  public void updateSource(List<Source> sources) {
-    for (Source source : sources) {
-      SingleSourceArticleService service =
-          new SingleSourceArticleService(mArticleFetcher, source.id(), "");
-      mChildren.put(source.id(), service);
+  public List<Article> getArticles() {
+    return mArticles;
+  }
+
+  public List<Article> getArticles(final Filter filter) {
+    List<Article> result = new ArrayList<>();
+    for (Article article : mArticles) {
+      if (filter.match(article)) {
+        result.add(article);
+      }
     }
+    return result;
   }
 
-  @Override
-  public void request(DataCallback<List<Article>> callback) {
+  public boolean hasMore(){
+    return true;
+  }
+  public boolean hasMore(String type){
+    return true;
+  }
+
+  public void requestMore(Action<Boolean> callback){
+
+  }
+
+  public void requestMore(String type, Action<Boolean> callback) {
 
   }
 }

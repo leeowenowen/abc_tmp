@@ -39,6 +39,11 @@ public class SourceService extends DataService<List<Source>> {
           }
         });
       }
+
+      @Override
+      public boolean hasMore() {
+        return false;
+      }
     };
   }
 }

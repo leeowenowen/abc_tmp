@@ -1,5 +1,6 @@
 package com.owo.common.model;
 
+import com.owo.Action;
 import com.owo.common.fsm.RV;
 
 import java.util.ArrayList;
@@ -116,5 +117,10 @@ public class CompositeDataProvider<T> implements DataProvider<List<T>> {
   public void request(DataCallback<List<T>> callback) {
     mCallback = callback;
     switchState(STATE_INIT);
+  }
+
+  @Override
+  public boolean hasMore() {
+    return !mResult.success() && nextState != STATE_COMPLETE;
   }
 }

@@ -16,6 +16,7 @@ import com.owo.news.model.entity.ArticleResponse;
 public class ArticleFetcher {
   private RequestQueue mRequestQueue;
 
+
   public ArticleFetcher(Context context) {
     mRequestQueue = Volley.newRequestQueue(context);
   }

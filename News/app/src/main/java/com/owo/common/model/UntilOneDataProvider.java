@@ -1,5 +1,6 @@
 package com.owo.common.model;
 
+import com.owo.Action;
 import com.owo.common.fsm.RV;
 
 import java.util.ArrayList;
@@ -120,5 +121,10 @@ public class UntilOneDataProvider<T> implements DataProvider<T> {
   public void request(DataCallback<T> callback) {
     mCallback = callback;
     switchState(STATE_INIT);
+  }
+
+  @Override
+  public boolean hasMore() {
+    return !mResult.success() && nextState != STATE_COMPLETE;
   }
 }

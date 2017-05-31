@@ -25,6 +25,11 @@ public abstract class DataService<T> implements DataProvider<T> {
           }
         });
       }
+
+      @Override
+      public boolean hasMore() {
+        return networkProvider().hasMore();
+      }
     });
   }
 
@@ -40,5 +45,10 @@ public abstract class DataService<T> implements DataProvider<T> {
       cacheProvider = new CacheProvider<>();
     }
     return cacheProvider;
+  }
+
+  @Override
+  public boolean hasMore() {
+    return cacheProvider.hasMore() || networkProvider().hasMore();
   }
 }

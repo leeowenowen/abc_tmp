@@ -15,4 +15,9 @@ public class CacheProvider<T> implements DataProvider<T> {
       callback.onResult(Result.make(ResultCode.ERROR_NO_DATA, "", mCache));
     }
   }
+
+  @Override
+  public boolean hasMore() {
+    return false;
+  }
 }
