@@ -15,9 +15,9 @@ import com.owo.news.model.entity.SourceResponse;
 
 public class SourceFetcher implements NetworkFetcher<SourceResponse> {
   private RequestQueue mRequestQueue;
-  private String mCategory;
-  private String mLanguage;
-  private String mCountry;
+  private String mCategory = "";
+  private String mLanguage = "";
+  private String mCountry = "";
 
   public SourceFetcher(Context context) {
     mRequestQueue = Volley.newRequestQueue(context);
@@ -55,6 +55,7 @@ public class SourceFetcher implements NetworkFetcher<SourceResponse> {
       @Override
       public void onErrorResponse(VolleyError error) {
         Log.e("TAG", error.getMessage(), error);
+        callback.run(null);
       }
     });
     mRequestQueue.add(stringRequest);

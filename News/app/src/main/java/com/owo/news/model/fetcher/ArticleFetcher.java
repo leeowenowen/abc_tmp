@@ -15,8 +15,8 @@ import com.owo.news.model.entity.ArticleResponse;
 
 public class ArticleFetcher implements NetworkFetcher<ArticleResponse> {
   private RequestQueue mRequestQueue;
-  private String mSource;
-  private String mSortBy;
+  private String mSource = "";
+  private String mSortBy = "";
 
 
   public ArticleFetcher(Context context) {
@@ -49,6 +49,7 @@ public class ArticleFetcher implements NetworkFetcher<ArticleResponse> {
       @Override
       public void onErrorResponse(VolleyError error) {
         Log.e("TAG", error.getMessage(), error);
+        callback.run(null);
       }
     });
     mRequestQueue.add(stringRequest);

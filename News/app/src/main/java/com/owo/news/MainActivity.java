@@ -133,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
                                    }
                                  });
 
-          container.addView(listView);
           listView.setDivider(null);
           listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -145,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
             }
           });
         }
+        container.addView(listView);
         return listView;
       }
 
