@@ -1,6 +1,6 @@
 package com.owo.news;
 
-import com.owo.news.core.utils.JsonUtils;
+import com.owo.common.utils.JsonUtils;
 import com.owo.news.model.default_data.SourceResponseData;
 import com.owo.news.model.entity.*;
 
