@@ -9,7 +9,7 @@ public class CacheProvider<T> implements DataProvider<T> {
 
   @Override
   public void request(DataCallback<T> callback) {
-    if (mCache == null) {
+    if (mCache != null) {
       callback.onResult(Result.make(ResultCode.SUCCESS, "", mCache));
     } else {
       callback.onResult(Result.make(ResultCode.ERROR_NO_DATA, "", mCache));

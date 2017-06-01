@@ -16,19 +16,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
+//multi source article service
 public class ArticleService {
+  private Context mContext;
   public ArticleService(Context context) {
-    mArticleFetcher = new ArticleFetcher(context);
+    mContext = context;
   }
 
   private Map<String, SingleSourceArticleService> mChildren = new HashMap<>();
-  private ArticleFetcher mArticleFetcher;
 
   public void updateSource(List<Source> sources) {
     mChildren.clear();
     for (Source source : sources) {
       SingleSourceArticleService service =
-          new SingleSourceArticleService(mArticleFetcher, source.id(), "");
+          new SingleSourceArticleService(new ArticleFetcher(mContext).source(source.id()));
       mChildren.put(source.id(), service);
     }
   }

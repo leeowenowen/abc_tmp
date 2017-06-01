@@ -18,34 +18,30 @@ import com.owo.common.model.DataCallback;
 import com.owo.common.model.Result;
 import com.owo.news.core.webview.WebViewActivity;
 import com.owo.news.model.ArticleService;
-import com.owo.news.model.SourceConfig;
+import com.owo.news.model.SourceConfigImpl;
 import com.owo.news.model.SourceService;
 import com.owo.news.model.entity.Article;
 import com.owo.news.model.entity.Source;
-import com.owo.news.model.provider.ArticleDefProvider;
 import com.owo.news.ui.ArticleAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
   //private MaterialViewPager mViewPager;
   private ViewPager mViewPager;
   private TabLayout mTabLayout;
-  private SourceConfig mSourceConfig;
+  private SourceConfigImpl mSourceConfig;
   private List<ListView> mListViews = new ArrayList<>();
 
   //Model
   SourceService mSourceService;
-  ArticleService mArticleService;
+  //ArticleService mArticleService;
 
   @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mSourceConfig = new SourceConfig();
     mTabLayout = new TabLayout(this);
     mViewPager = new ViewPager(this);
     mTabLayout.setupWithViewPager(mViewPager);
@@ -58,12 +54,15 @@ public class MainActivity extends AppCompatActivity {
     setContentView(main);
 
     setupModel();
-    startLoadingData();
+    //startLoadingData();
+    setupViewPager();
   }
 
   private void setupModel() {
+    mSourceConfig = new SourceConfigImpl();
     mSourceService = new SourceService(this);
-    mArticleService = new ArticleService(this);
+    mSourceService.updateCategory(mSourceConfig);
+    //mArticleService = new ArticleService(this);
   }
 
   private void startLoadingData() {
@@ -97,28 +96,43 @@ public class MainActivity extends AppCompatActivity {
 
       @Override
       public Object instantiateItem(ViewGroup container, int position) {
-        ListView listView = mListViews.get(position);
-        if (listView == null) {
-          listView = new ListView(MainActivity.this);
+        ListView listView = null;
+        if (mListViews.size() > position) {
+          listView = mListViews.get(position);
+        } else {
+          final ListView newListView = new ListView(MainActivity.this);
+          listView = newListView;
           mListViews.add(position, listView);
           final ArticleAdapter articleAdapter = new ArticleAdapter(MainActivity.this);
-          ArticleService articleService = new ArticleService(MainActivity.this);
-          articleService.requestMore(new DataCallback<List<Article>>() {
-            @Override
-            public void onResult(final Result<List<Article>> result) {
-              runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                  if (result.success()) {
-                    articleAdapter.setData(result.data());
-                  } else {
+          mSourceService.request(mSourceConfig.categories().get(position),
+                                 new DataCallback<List<Source>>() {
+                                   @Override
+                                   public void onResult(Result<List<Source>> result) {
+                                     if (!result.success()) {
+                                       return;
+                                     }
+                                     ArticleService articleService =
+                                         new ArticleService(MainActivity.this);
+                                     articleService.updateSource(result.data());
+                                     articleService.requestMore(new DataCallback<List<Article>>() {
+                                       @Override
+                                       public void onResult(final Result<List<Article>> result) {
+                                         runOnUiThread(new Runnable() {
+                                           @Override
+                                           public void run() {
+                                             if (result.success()) {
+                                               articleAdapter.setData(result.data());
+                                               newListView.setAdapter(articleAdapter);
+                                             } else {
 
-                  }
-                }
-              });
-            }
-          });
-          listView.setAdapter(articleAdapter);
+                                             }
+                                           }
+                                         });
+                                       }
+                                     });
+                                   }
+                                 });
+
           container.addView(listView);
           listView.setDivider(null);
           listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -1,10 +1,13 @@
 package com.owo.news.model;
 
+import com.owo.Action;
 import com.owo.common.model.CacheProvider;
 import com.owo.common.model.DataCallback;
 import com.owo.common.model.DataProvider;
 import com.owo.common.model.Result;
+import com.owo.common.model.ResultCode;
 import com.owo.common.model.UntilOneDataProvider;
+import com.owo.news.model.fetcher.NetworkFetcher;
 
 
 public abstract class DataService<T> implements DataProvider<T> {
@@ -38,7 +41,28 @@ public abstract class DataService<T> implements DataProvider<T> {
     sourceProviders.request(callback);
   }
 
-  public abstract DataProvider<T> networkProvider();
+  public DataProvider<T> networkProvider() {
+    return new DataProvider<T>() {
+      @Override
+      public void request(final DataCallback<T> callback) {
+        networkFetcher().fetch(new Action<T>() {
+          @Override
+          public void run(T t) {
+            callback.onResult(Result.make(t == null ? ResultCode.ERROR_NO_DATA : ResultCode.SUCCESS,
+                                          "",
+                                          t));
+          }
+        });
+      }
+
+      @Override
+      public boolean hasMore() {
+        return false;
+      }
+    };
+  }
+
+  public abstract NetworkFetcher<T> networkFetcher();
 
   public CacheProvider<T> cacheProvider() {
     if (cacheProvider == null) {

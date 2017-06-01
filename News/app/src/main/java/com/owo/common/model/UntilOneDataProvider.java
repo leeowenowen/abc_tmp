@@ -101,7 +101,7 @@ public class UntilOneDataProvider<T> implements DataProvider<T> {
 
   private int handleRequestDataComplete() {
     mCurrentProviderIndex++;
-    if (mCurrentProviderIndex == mChildren.size() - 1) {
+    if (mCurrentProviderIndex == mChildren.size()) {
       mResult = Result.make(ResultCode.ERROR_NO_DATA, "no success provider !", null);
       switchState(STATE_COMPLETE);
       return RV.ERROR;
