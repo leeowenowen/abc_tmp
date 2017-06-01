@@ -12,7 +12,7 @@ public class App extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
-    MobileAds.initialize(this);
+    MobileAds.initialize(this,"ca-app-pub-7286925161756855~1743491325");
 
   }
 }

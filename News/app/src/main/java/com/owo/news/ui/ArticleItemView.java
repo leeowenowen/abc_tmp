@@ -30,7 +30,7 @@ public class ArticleItemView extends FrameLayout {
     mCover = new NetworkImageView(context);
     content.addView(mCover,
                     new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                                                 LayoutParams.WRAP_CONTENT));
+                                                 400));
     content.addView(mTitle,
                     new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                                                  LayoutParams.WRAP_CONTENT,

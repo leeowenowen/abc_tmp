@@ -87,7 +87,7 @@ public class ArticleAdapter extends BaseAdapter {
     return 0;
   }
 
-  private Stack<ArticleItemView> mArticleItemViews = new Stack<>();
+  private Stack<ArticleSmallItemView> mArticleItemViews = new Stack<>();
   private Stack<NativeExpressAdView> mNativeViews = new Stack<>();
 
   private View obtainView(Context context, int position) {
@@ -99,7 +99,7 @@ public class ArticleAdapter extends BaseAdapter {
         v = obtainNativeView(context);
       }
     } else {
-      ArticleItemView articleItemView;
+      ArticleSmallItemView articleItemView;
       if (mArticleItemViews.size() > 0) {
         articleItemView = mArticleItemViews.pop();
       } else {
@@ -112,23 +112,23 @@ public class ArticleAdapter extends BaseAdapter {
     return v;
   }
 
-  private ArticleItemView obtainArticleImageView(Context context) {
-    ArticleItemView itemView = new ArticleItemView(context);
+  private ArticleSmallItemView obtainArticleImageView(Context context) {
+    ArticleSmallItemView itemView = new ArticleSmallItemView(context);
     return itemView;
   }
 
   private NativeExpressAdView obtainNativeView(Context context) {
     NativeExpressAdView adView = new NativeExpressAdView(context);
-    adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
-    adView.setAdSize(AdSize.MEDIUM_RECTANGLE);
+    adView.setAdUnitId(" ca-app-pub-7286925161756855/1678258128");
+    adView.setAdSize(new AdSize(360,100));
     AdRequest request = new AdRequest.Builder().build();
     adView.loadAd(request);
     return adView;
   }
 
   private void putIntoCache(View v) {
-    if (v instanceof ArticleItemView && !mArticleItemViews.contains(v)) {
-      mArticleItemViews.add((ArticleItemView) v);
+    if (v instanceof ArticleSmallItemView && !mArticleItemViews.contains(v)) {
+      mArticleItemViews.add((ArticleSmallItemView) v);
       return;
     }
     if (v instanceof NativeExpressAdView && !mNativeViews.contains(v)) {
