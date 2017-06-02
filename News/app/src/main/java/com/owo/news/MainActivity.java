@@ -22,6 +22,7 @@ import com.owo.news.model.SourceConfigImpl;
 import com.owo.news.model.SourceService;
 import com.owo.news.model.entity.Article;
 import com.owo.news.model.entity.Source;
+import com.owo.news.theme.Theme;
 import com.owo.news.ui.ArticleAdapter;
 
 import java.util.ArrayList;
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mTabLayout = new TabLayout(this);
+    mTabLayout.setTabTextColors(Theme.instance().getTitleNormalColor(),
+                                Theme.instance().getMainColor());
+    mTabLayout.setBackgroundColor(Theme.instance().getContentFgColor());
     mViewPager = new ViewPager(this);
     mTabLayout.setupWithViewPager(mViewPager);
     mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -96,11 +100,12 @@ public class MainActivity extends AppCompatActivity {
 
       @Override
       public Object instantiateItem(ViewGroup container, int position) {
-        ListView listView = null;
+        ListView listView;
         if (mListViews.size() > position) {
           listView = mListViews.get(position);
         } else {
           final ListView newListView = new ListView(MainActivity.this);
+          newListView.setBackgroundColor(Theme.instance().getContentBgColor());
           listView = newListView;
           mListViews.add(position, listView);
           final ArticleAdapter articleAdapter = new ArticleAdapter(MainActivity.this);

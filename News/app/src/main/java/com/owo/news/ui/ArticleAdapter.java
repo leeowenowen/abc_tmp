@@ -117,12 +117,13 @@ public class ArticleAdapter extends BaseAdapter {
     return itemView;
   }
 
-  private NativeExpressAdView obtainNativeView(Context context) {
-    NativeExpressAdView adView = new NativeExpressAdView(context);
-    adView.setAdUnitId(" ca-app-pub-7286925161756855/1678258128");
-    adView.setAdSize(new AdSize(360,100));
-    AdRequest request = new AdRequest.Builder().build();
-    adView.loadAd(request);
+  private View obtainNativeView(Context context) {
+//    NativeExpressAdView adView = new NativeExpressAdView(context);
+//    adView.setAdUnitId(" ca-app-pub-7286925161756855/1678258128");
+//    adView.setAdSize(new AdSize(360,100));
+//    AdRequest request = new AdRequest.Builder().build();
+//    adView.loadAd(request);
+    View adView = new View(context);
     return adView;
   }
 
@@ -131,9 +132,9 @@ public class ArticleAdapter extends BaseAdapter {
       mArticleItemViews.add((ArticleSmallItemView) v);
       return;
     }
-    if (v instanceof NativeExpressAdView && !mNativeViews.contains(v)) {
-      mNativeViews.add((NativeExpressAdView) v);
-    }
+//    if (v instanceof NativeExpressAdView && !mNativeViews.contains(v)) {
+//      mNativeViews.add((NativeExpressAdView) v);
+//    }
   }
 
   @Override
