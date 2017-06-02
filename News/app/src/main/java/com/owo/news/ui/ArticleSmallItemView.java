@@ -70,7 +70,7 @@ public class ArticleSmallItemView extends FrameLayout {
 //    setPadding(hPadding, vPadding, hPadding, vPadding);
 //    RectF inset = new RectF(hPadding, vPadding, hPadding, vPadding);
     // 内部矩形弧度
-    float[] innerRadii = null;//new float[] {outRV, 20, 20, 20, 20, 20, 20, 20};
+   // float[] innerRadii = null;//new float[] {outRV, 20, 20, 20, 20, 20, 20, 20};
     RoundRectShape rr = new RoundRectShape(outerR, null, null);
     ShapeDrawable bg = new ShapeDrawable(rr);
     // mBg.getPaint().setShader(UIUtils.makeLinear());
