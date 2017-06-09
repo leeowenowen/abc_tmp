@@ -17,7 +17,6 @@ public class UIUtils {
   public static void init(Context context) {
     scale = context.getResources().getDisplayMetrics().density;
     scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
-
   }
 
   /**

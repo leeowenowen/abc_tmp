@@ -1,11 +1,10 @@
 package com.owo.news.model;
 
-import android.content.Context;
-
 import com.owo.Action;
+import com.owo.common.model.DataService;
 import com.owo.news.model.entity.Source;
 import com.owo.news.model.entity.SourceResponse;
-import com.owo.news.model.fetcher.NetworkFetcher;
+import com.owo.common.model.NetworkFetcher;
 import com.owo.news.model.fetcher.SourceFetcher;
 
 import java.util.List;

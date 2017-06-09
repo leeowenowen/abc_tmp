@@ -1,10 +1,11 @@
 package com.owo.news.model;
 
 import com.owo.Action;
+import com.owo.common.model.DataService;
 import com.owo.news.model.entity.Article;
 import com.owo.news.model.entity.ArticleResponse;
 import com.owo.news.model.fetcher.ArticleFetcher;
-import com.owo.news.model.fetcher.NetworkFetcher;
+import com.owo.common.model.NetworkFetcher;
 
 import java.util.List;
 

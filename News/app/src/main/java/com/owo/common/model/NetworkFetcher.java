@@ -1,4 +1,4 @@
-package com.owo.news.model.fetcher;
+package com.owo.common.model;
 
 import com.owo.Action;
 

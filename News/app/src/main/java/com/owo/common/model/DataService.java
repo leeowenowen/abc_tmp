@@ -1,13 +1,6 @@
-package com.owo.news.model;
+package com.owo.common.model;
 
 import com.owo.Action;
-import com.owo.common.model.CacheProvider;
-import com.owo.common.model.DataCallback;
-import com.owo.common.model.DataProvider;
-import com.owo.common.model.Result;
-import com.owo.common.model.ResultCode;
-import com.owo.common.model.UntilOneDataProvider;
-import com.owo.news.model.fetcher.NetworkFetcher;
 
 
 public abstract class DataService<T> implements DataProvider<T> {

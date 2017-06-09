@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -41,6 +42,7 @@ public class ArticleSmallItemView extends FrameLayout {
     mContent.addView(mCover,
                      new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                                                    LinearLayout.LayoutParams.WRAP_CONTENT));
+    mCover.setScaleType(ImageView.ScaleType.FIT_START);
     addView(mContent);
     MarginLayoutParams mlp = (MarginLayoutParams) mContent.getLayoutParams();
     int hMargin = UIUtils.dip2px(10);

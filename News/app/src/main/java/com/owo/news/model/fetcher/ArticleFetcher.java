@@ -9,6 +9,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.owo.Action;
+import com.owo.common.model.NetworkFetcher;
 import com.owo.common.utils.JsonUtils;
 import com.owo.news.model.Constants;
 import com.owo.news.model.entity.ArticleResponse;
