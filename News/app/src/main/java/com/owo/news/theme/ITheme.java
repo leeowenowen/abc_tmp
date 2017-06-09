@@ -9,9 +9,11 @@ public interface ITheme {
    * color
    */
   int getMainColor();
+  int getSecondColor();
   int getContentBgColor();
   int getContentFgColor();
   int getTitleNormalColor();
+  int getTitleHighlightColor();
   int getTitleReadedColor();
   int getDescriptionNormalColor();
   int getDescriptionReadedColor();

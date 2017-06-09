@@ -19,6 +19,11 @@ public class Theme implements ITheme {
   }
 
   @Override
+  public int getSecondColor() {
+    return mDelegate.getSecondColor();
+  }
+
+  @Override
   public int getContentBgColor() {
     return mDelegate.getContentBgColor();
   }
@@ -31,6 +36,11 @@ public class Theme implements ITheme {
   @Override
   public int getTitleNormalColor() {
     return mDelegate.getTitleNormalColor();
+  }
+
+  @Override
+  public int getTitleHighlightColor() {
+    return mDelegate.getTitleHighlightColor();
   }
 
   @Override

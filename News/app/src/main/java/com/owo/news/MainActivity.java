@@ -1,6 +1,8 @@
 package com.owo.news;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -43,10 +45,11 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Theme.instance().getMainColor()));
     mTabLayout = new TabLayout(this);
     mTabLayout.setTabTextColors(Theme.instance().getTitleNormalColor(),
-                                Theme.instance().getMainColor());
-    mTabLayout.setBackgroundColor(Theme.instance().getContentFgColor());
+                                Theme.instance().getTitleHighlightColor());
+    mTabLayout.setBackgroundColor(Theme.instance().getSecondColor());
     mViewPager = new ViewPager(this);
     mTabLayout.setupWithViewPager(mViewPager);
     mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);

@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.owo.common.ui.view.MatchNetworkImageView;
 import com.owo.common.utils.UIUtils;
 import com.owo.news.model.entity.Article;
 import com.owo.news.theme.Theme;
@@ -28,25 +30,27 @@ import com.owo.news.theme.Theme;
 public class ArticleSmallItemView extends FrameLayout {
   private TextView mTitle;
   private TextView mDescription;
-  private NetworkImageView mCover;
+  private MatchNetworkImageView mCover;
   private LinearLayout mContent;
 
   public ArticleSmallItemView(Context context) {
     super(context);
     mTitle = new TextView(context);
-    mCover = new NetworkImageView(context);
+    mCover = new MatchNetworkImageView(context);
     mDescription = new TextView(context);
     mContent = new LinearLayout(context);
     mContent.setOrientation(LinearLayout.VERTICAL);
     mContent.addView(mTitle);
     mContent.addView(mCover,
-                     new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                                                   LinearLayout.LayoutParams.WRAP_CONTENT));
+                     new LinearLayout.LayoutParams(UIUtils.w(1040),
+                                                   UIUtils.h(520)));
+
     mCover.setScaleType(ImageView.ScaleType.FIT_START);
+    mCover.setAdjustViewBounds(true);
     addView(mContent);
     MarginLayoutParams mlp = (MarginLayoutParams) mContent.getLayoutParams();
-    int hMargin = UIUtils.dip2px(10);
-    int vMargin = UIUtils.dip2px(5);
+    int hMargin = UIUtils.w(20);
+    int vMargin = UIUtils.w(20);
     mlp.leftMargin = hMargin;
     mlp.rightMargin = hMargin;
     mlp.topMargin = vMargin;
@@ -64,7 +68,7 @@ public class ArticleSmallItemView extends FrameLayout {
     mDescription.setTextSize(TypedValue.COMPLEX_UNIT_PX, theme.getDescriptionFontSize());
 
     // 外部矩形弧度
-    float outRV = UIUtils.dip2px(10);
+    float outRV = UIUtils.w(10);
     float[] outerR = new float[] {outRV, outRV, outRV, outRV, outRV, outRV, outRV, outRV};
     // 内部矩形与外部矩形的距离
 //    int hPadding = UIUtils.dip2px(10);
@@ -84,6 +88,10 @@ public class ArticleSmallItemView extends FrameLayout {
   public void setData(Article article, ImageLoader imageLoader) {
     mTitle.setText(article.title());
     mDescription.setText(article.description());
-    mCover.setImageUrl(article.urlToImage(), imageLoader);
+    if(!TextUtils.isEmpty(article.urlToImage())) {
+      mCover.setImageUrl(article.urlToImage(), imageLoader);
+    }else{
+
+    }
   }
 }

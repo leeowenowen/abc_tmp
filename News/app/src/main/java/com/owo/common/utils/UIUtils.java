@@ -1,5 +1,6 @@
 package com.owo.common.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -8,49 +9,59 @@ import android.graphics.Shader;
 import android.graphics.SweepGradient;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 public class UIUtils {
   private static float scale;
   private static float scaledDensity;
 
-  public static void init(Context context) {
-    scale = context.getResources().getDisplayMetrics().density;
-    scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+  public static void init(Activity activity) {
+    scale = activity.getResources().getDisplayMetrics().density;
+    scaledDensity = activity.getResources().getDisplayMetrics().scaledDensity;
+    sDisplayMetrics = new DisplayMetrics();
+    activity.getWindowManager().getDefaultDisplay().getMetrics(sDisplayMetrics);
+
   }
 
-  /**
-   * dp转成px
-   *
-   * @param dipValue
-   *
-   * @return
-   */
-  public static int dip2px(float dipValue) {
-    return (int) (dipValue * scale + 0.5f);
+  public static int w(int w) {
+    return w * displayMetrics().widthPixels / 1080;
   }
 
-  /**
-   * px转成dp
-   *
-   * @param pxValue
-   *
-   * @return
-   */
-  public static int px2dip(float pxValue) {
-    return (int) (pxValue / scale + 0.5f);
+  public static int h(int h) {
+    return h * displayMetrics().heightPixels / 1920;
   }
 
-  /**
-   * sp转成px
-   *
-   * @param spValue
-   * @param type
-   *
-   * @return
-   */
-  public static float sp2px(float spValue, int type) {
-    return spValue * scaledDensity;
+  private static DisplayMetrics sDisplayMetrics = null;
+
+  public static DisplayMetrics displayMetrics() {
+    return sDisplayMetrics;
+  }
+
+  public static int screenWidth() {
+    return sDisplayMetrics.widthPixels;
+  }
+
+  public static int screenHeight() {
+    return sDisplayMetrics.heightPixels;
+  }
+
+  public static int dip2px(int dip) {
+    return (int) displayMetrics().density * dip;
+  }
+
+  public static int sp2Px(int sp) {
+    return (int) (sp * displayMetrics().scaledDensity);
+  }
+
+  public static float pointToPixel(float point) {
+    double xdpi = displayMetrics().xdpi;
+    return (float) (point * xdpi * (1.0f / 72));
+  }
+
+  public static float millimeterToPixel(float mm) {
+    double xdpi = displayMetrics().xdpi;
+    return (float) (mm * xdpi * (1.0f / 25.4f));
   }
 
   public static final void setBackgroundDrawable(View v, Drawable d) {

@@ -15,18 +15,28 @@ public class Blue implements ITheme {
   }
 
   @Override
+  public int getSecondColor() {
+    return Color.parseColor("#0000CC");
+  }
+
+  @Override
   public int getContentBgColor() {
     return Color.parseColor("#999999");
   }
 
   @Override
   public int getContentFgColor() {
-    return Color.WHITE;
+    return Color.parseColor("#000099");
   }
 
   @Override
   public int getTitleNormalColor() {
-    return Color.BLACK;
+    return Color.WHITE;
+  }
+
+  @Override
+  public int getTitleHighlightColor() {
+    return Color.YELLOW;
   }
 
   @Override
@@ -46,11 +56,11 @@ public class Blue implements ITheme {
 
   @Override
   public int getTitleFontSize() {
-    return UIUtils.dip2px(16);
+    return UIUtils.w(48);
   }
 
   @Override
   public int getDescriptionFontSize() {
-    return UIUtils.dip2px(14);
+    return UIUtils.w(42);
   }
 }
