@@ -6,7 +6,9 @@ import android.os.Bundle;
 
 import com.google.android.gms.ads.MobileAds;
 import com.owo.common.utils.UIUtils;
+import com.owo.news.theme.Black;
 import com.owo.news.theme.Blue;
+import com.owo.news.theme.Red;
 import com.owo.news.theme.Theme;
 
 /**
@@ -18,7 +20,7 @@ public class App extends Application {
   public void onCreate() {
     super.onCreate();
     MobileAds.initialize(this, "ca-app-pub-7286925161756855~1743491325");
-    Theme.instance().setCurrentConfig(new Blue());
+    Theme.instance().setCurrentConfig(new Black());
     registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
       @Override
       public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
