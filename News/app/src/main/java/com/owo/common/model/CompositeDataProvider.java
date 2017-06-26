@@ -1,6 +1,5 @@
 package com.owo.common.model;
 
-import com.owo.Action;
 import com.owo.common.fsm.RV;
 
 import java.util.ArrayList;
@@ -11,6 +10,12 @@ import java.util.concurrent.Executors;
 public class CompositeDataProvider<T> implements DataProvider<List<T>> {
   private static Executor sSequenceExecutor = Executors.newSingleThreadExecutor();
   private List<DataProvider<T>> dataProviders;
+  private boolean mMultiNotify = false;
+
+  public CompositeDataProvider<T> multiNotify() {
+    mMultiNotify = true;
+    return this;
+  }
 
   public void add(DataProvider<T> dataProvider) {
     if (dataProviders == null) {
@@ -87,6 +92,8 @@ public class CompositeDataProvider<T> implements DataProvider<List<T>> {
               mChildResults.add(result);
               if (mChildResults.size() == dataProviders.size()) {
                 switchState(STATE_COMPLETE);
+              } else if (mMultiNotify && result.success()) {
+                doNotify();
               }
             }
           });
@@ -96,7 +103,7 @@ public class CompositeDataProvider<T> implements DataProvider<List<T>> {
     return RV.PENDING;
   }
 
-  private int handleComplete() {
+  private void doNotify() {
     List<T> results = new ArrayList<>();
     for (Result<T> result : mChildResults) {
       if (result.success()) {
@@ -108,6 +115,10 @@ public class CompositeDataProvider<T> implements DataProvider<List<T>> {
     } else {
       mCallback.onResult(Result.make(ResultCode.ERROR_NO_DATA, "", (List<T>) null));
     }
+  }
+
+  private int handleComplete() {
+    doNotify();
     return RV.OK;
   }
 

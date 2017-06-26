@@ -1,6 +1,5 @@
 package com.owo.news.ui;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
@@ -12,13 +11,9 @@ import android.widget.BaseAdapter;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.NativeExpressAdView;
-import com.google.android.gms.ads.formats.NativeCustomTemplateAd;
 import com.owo.news.model.entity.Article;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 

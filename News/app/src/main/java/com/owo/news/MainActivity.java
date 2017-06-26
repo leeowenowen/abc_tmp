@@ -1,5 +1,6 @@
 package com.owo.news;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -9,29 +10,35 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 
 import com.owo.common.model.DataCallback;
 import com.owo.common.model.Result;
+import com.owo.common.utils.UIUtils;
 import com.owo.news.core.webview.WebViewActivity;
 import com.owo.news.model.ArticleService;
 import com.owo.news.model.SourceConfigImpl;
 import com.owo.news.model.SourceService;
 import com.owo.news.model.entity.Article;
 import com.owo.news.model.entity.Source;
+import com.owo.news.theme.Black;
+import com.owo.news.theme.Blue;
+import com.owo.news.theme.Red;
 import com.owo.news.theme.Theme;
 import com.owo.news.ui.ArticleAdapter;
+import com.owo.news.ui.ThemSettingView;
+import com.owo.news.ui.TitleBar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
-  //private MaterialViewPager mViewPager;
+public class MainActivity extends Activity implements Theme.ThemeObserver {
+  private TitleBar mTitleBar;
   private ViewPager mViewPager;
   private TabLayout mTabLayout;
   private SourceConfigImpl mSourceConfig;
@@ -39,54 +46,36 @@ public class MainActivity extends AppCompatActivity {
 
   //Model
   SourceService mSourceService;
-  //ArticleService mArticleService;
 
   @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Theme.instance().getMainColor()));
+    Theme.instance().registerObserver(this);
+    mTitleBar = new TitleBar(this);
+    mTitleBar.setTitle("Cool News");
+    mTitleBar.setOnClickListener(mSettingClickListener);
     mTabLayout = new TabLayout(this);
-    mTabLayout.setTabTextColors(Theme.instance().getTitleNormalColor(),
-                                Theme.instance().getTitleHighlightColor());
-    mTabLayout.setBackgroundColor(Theme.instance().getSecondColor());
     mViewPager = new ViewPager(this);
     mTabLayout.setupWithViewPager(mViewPager);
     mTabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
     mTabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
     LinearLayout main = new LinearLayout(this);
     main.setOrientation(LinearLayout.VERTICAL);
+    main.addView(mTitleBar);
     main.addView(mTabLayout);
     main.addView(mViewPager);
     setContentView(main);
 
     setupModel();
-    //startLoadingData();
     setupViewPager();
+    onThemeChanged();
   }
 
   private void setupModel() {
     mSourceConfig = new SourceConfigImpl();
     mSourceService = new SourceService(this);
     mSourceService.updateCategory(mSourceConfig);
-    //mArticleService = new ArticleService(this);
-  }
-
-  private void startLoadingData() {
-    mSourceService.request(new DataCallback<List<Source>>() {
-      @Override
-      public void onResult(Result<List<Source>> result) {
-        if (result.success()) {
-          List<Source> sources = result.data();
-          runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-              setupViewPager();
-            }
-          });
-        }
-      }
-    });
   }
 
   private void setupViewPager() {
@@ -108,7 +97,14 @@ public class MainActivity extends AppCompatActivity {
           listView = mListViews.get(position);
         } else {
           final ListView newListView = new ListView(MainActivity.this);
-          newListView.setBackgroundColor(Theme.instance().getContentBgColor());
+          Theme.ThemeObserver themeObserver = new Theme.ThemeObserver() {
+            @Override
+            public void onThemeChanged() {
+              newListView.setBackgroundColor(Theme.instance().getContentBgColor());
+            }
+          };
+          Theme.instance().registerObserver(themeObserver);
+          themeObserver.onThemeChanged();
           listView = newListView;
           mListViews.add(position, listView);
           final ArticleAdapter articleAdapter = new ArticleAdapter(MainActivity.this);
@@ -166,5 +162,42 @@ public class MainActivity extends AppCompatActivity {
         return mSourceConfig.categories().get(position);
       }
     });
+  }
+
+  private View.OnClickListener mSettingClickListener = new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+      final PopupWindow popupWindow = new PopupWindow(MainActivity.this);
+      popupWindow.setWidth(UIUtils.w(300));
+      popupWindow.setHeight(UIUtils.h(480));
+      popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+      ThemSettingView themSettingView = new ThemSettingView(MainActivity.this);
+      final ThemSettingView.ThemeItem[] themeItems = new ThemSettingView.ThemeItem[] {
+          new ThemSettingView.ThemeItem("Black", new Black()),//
+          new ThemSettingView.ThemeItem("Blue", new Blue()),//
+          new ThemSettingView.ThemeItem("Red", new Red())//
+      };
+      themSettingView.themeData(themeItems);
+      themSettingView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+          ThemSettingView.ThemeItem themeItem = themeItems[position];
+          Theme.instance().setCurrentConfig(themeItem.mTheme);
+          popupWindow.dismiss();
+        }
+      });
+      popupWindow.setContentView(themSettingView);
+      popupWindow.setOutsideTouchable(true);
+      popupWindow.showAsDropDown(mTitleBar.settingView());
+    }
+  };
+
+  @Override
+  public void onThemeChanged() {
+    UIUtils.setBackgroundDrawable(mTitleBar, new ColorDrawable(Theme.instance().getMainColor()));
+    mTabLayout.setTabTextColors(Theme.instance().getTitleNormalColor(),
+                                Theme.instance().getTitleHighlightColor());
+    mTabLayout.setBackgroundColor(Theme.instance().getSecondColor());
   }
 }

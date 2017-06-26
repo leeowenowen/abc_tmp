@@ -19,6 +19,7 @@ import java.util.Observable;
 //multi source article service
 public class ArticleService {
   private Context mContext;
+
   public ArticleService(Context context) {
     mContext = context;
   }
@@ -50,6 +51,7 @@ public class ArticleService {
 
   public void requestMore(final DataCallback<List<Article>> callback) {
     CompositeDataProvider<List<Article>> compositeDataProvider = new CompositeDataProvider<>();
+    compositeDataProvider.multiNotify();
     for (SingleSourceArticleService service : mChildren.values()) {
       compositeDataProvider.add(service);
     }

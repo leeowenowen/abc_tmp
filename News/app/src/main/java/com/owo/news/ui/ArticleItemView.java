@@ -9,40 +9,47 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.owo.news.model.entity.Article;
+import com.owo.news.theme.Theme;
 
 /**
  * Created by wangli on 17-5-3.
  */
 
-public class ArticleItemView extends FrameLayout {
+public class ArticleItemView extends FrameLayout implements Theme.ThemeObserver {
   private TextView mTitle;
   private NetworkImageView mCover;
+  private FrameLayout mContent;
 
   public ArticleItemView(Context context) {
     super(context);
-    FrameLayout content = new FrameLayout(context);
+    mContent = new FrameLayout(context);
     mTitle = new TextView(context);
-    mTitle.setBackgroundColor(Color.argb(150, 100, 100, 100));
-    mTitle.setTextColor(Color.WHITE);
     mCover = new NetworkImageView(context);
-    content.addView(mCover,
-                    new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                                                 400));
-    content.addView(mTitle,
-                    new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                                                 LayoutParams.WRAP_CONTENT,
-                                                 Gravity.BOTTOM));
+    mContent.addView(mCover, new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, 400));
+    mContent.addView(mTitle,
+                     new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                                                  LayoutParams.WRAP_CONTENT,
+                                                  Gravity.BOTTOM));
 
-    content.setBackgroundColor(Color.BLACK);
-    addView(content);
-    MarginLayoutParams marginLayoutParams = (MarginLayoutParams) content.getLayoutParams();
+
+    addView(mContent);
+    MarginLayoutParams marginLayoutParams = (MarginLayoutParams) mContent.getLayoutParams();
     marginLayoutParams.topMargin = 20;
     marginLayoutParams.bottomMargin = 20;
-    setBackgroundColor(Color.argb(100, 100, 100, 100));
+    onThemeChanged();
+    Theme.instance().registerObserver(this);
   }
 
   public void setData(Article article, ImageLoader imageLoader) {
     mTitle.setText(article.title());
     mCover.setImageUrl(article.urlToImage(), imageLoader);
+  }
+
+  @Override
+  public void onThemeChanged() {
+    mTitle.setBackgroundColor(Color.argb(150, 100, 100, 100));
+    mTitle.setTextColor(Color.WHITE);
+    mContent.setBackgroundColor(Color.BLACK);
+    setBackgroundColor(Color.argb(100, 100, 100, 100));
   }
 }

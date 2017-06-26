@@ -1,7 +1,21 @@
 package com.owo.news.theme;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Theme implements ITheme {
   private static final Theme sInstance = new Theme();
+
+  public interface ThemeObserver {
+    void onThemeChanged();
+  }
+
+  private List<WeakReference<ThemeObserver>> mObservers = new ArrayList<>();
+
+  public void registerObserver(ThemeObserver themeObserver) {
+    mObservers.add(new WeakReference<ThemeObserver>(themeObserver));
+  }
 
   public static final Theme instance() {
     return sInstance;
@@ -11,6 +25,11 @@ public class Theme implements ITheme {
 
   public void setCurrentConfig(ITheme delegate) {
     mDelegate = delegate;
+    for (WeakReference<ThemeObserver> observer : mObservers) {
+      if (observer.get() != null) {
+        observer.get().onThemeChanged();
+      }
+    }
   }
 
   @Override
