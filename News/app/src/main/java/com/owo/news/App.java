@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
 
+import com.flurry.android.FlurryAgent;
 import com.google.android.gms.ads.MobileAds;
 import com.owo.common.utils.UIUtils;
+import com.owo.news.ad.AdUtils;
 import com.owo.news.theme.Black;
 import com.owo.news.theme.Blue;
 import com.owo.news.theme.Red;
@@ -20,7 +22,9 @@ public class App extends Application {
   public void onCreate() {
     super.onCreate();
     MobileAds.initialize(this, "ca-app-pub-7286925161756855~1743491325");
-    Theme.instance().setCurrentConfig(new Black());
+    Theme.instance().setCurrentConfig(new Red());
+    new FlurryAgent.Builder().withLogEnabled(true).build(this, "KSNWRK2G5HJVRBRDR759");
+    AdUtils.loadInterstitial(this);
     registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
       @Override
       public void onActivityCreated(Activity activity, Bundle savedInstanceState) {

@@ -52,6 +52,10 @@ public class TitleBar extends FrameLayout implements Theme.ThemeObserver {
     mSetting.setOnClickListener(l);
   }
 
+  public void setTitleClickListener(OnClickListener l){
+    mTitle.setOnClickListener(l);
+  }
+
   public View settingView() {
     return mSetting;
   }

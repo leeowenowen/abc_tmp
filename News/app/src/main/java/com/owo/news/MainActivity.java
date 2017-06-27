@@ -20,6 +20,7 @@ import android.widget.PopupWindow;
 import com.owo.common.model.DataCallback;
 import com.owo.common.model.Result;
 import com.owo.common.utils.UIUtils;
+import com.owo.news.about.AboutActivity;
 import com.owo.news.core.webview.WebViewActivity;
 import com.owo.news.model.ArticleService;
 import com.owo.news.model.SourceConfigImpl;
@@ -54,7 +55,8 @@ public class MainActivity extends Activity implements Theme.ThemeObserver {
     Theme.instance().registerObserver(this);
     mTitleBar = new TitleBar(this);
     mTitleBar.setTitle("Cool News");
-    mTitleBar.setOnClickListener(mSettingClickListener);
+    mTitleBar.setSettingClickListener(mSettingClickListener);
+    mTitleBar.setTitleClickListener(mTitleClickListener);
     mTabLayout = new TabLayout(this);
     mViewPager = new ViewPager(this);
     mTabLayout.setupWithViewPager(mViewPager);
@@ -163,6 +165,13 @@ public class MainActivity extends Activity implements Theme.ThemeObserver {
       }
     });
   }
+
+  private View.OnClickListener mTitleClickListener = new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+      startActivity(new Intent(MainActivity.this, AboutActivity.class));
+    }
+  };
 
   private View.OnClickListener mSettingClickListener = new View.OnClickListener() {
     @Override
